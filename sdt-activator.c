@@ -124,20 +124,22 @@ int instrument_object(const char *path)
 	while (curr != NULL) {
 		addr = 0;
 		ret = lttng_elf_get_sdt_sema_addr(fd, curr->provider, curr->probe_name, &addr);
-		curr = curr->next;
 		if (ret != 0) {
+			curr = curr->next;
 			continue;
 		}
 		if (addr == 0) {
 			printf("No semaphore for probe %s:%s in %s\n",
 				   curr->provider, curr->probe_name, path);
+			curr = curr->next;
 			continue;
 		}
 
 		printf("Enabling semaphore of probe %s:%s at 0x%lx in %s\n",
 			   	   curr->provider, curr->probe_name, addr, path);
 
-		*((uint64_t *) addr) += 1;
+		*((uint64_t *) addr) = 1;
+		curr = curr->next;
 	}
 end:
 	return ret;
