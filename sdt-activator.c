@@ -130,13 +130,13 @@ int instrument_object(const char *path)
 		}
 		if (addr == 0) {
 			printf("No semaphore for probe %s:%s in %s\n",
-				   curr->provider, curr->probe_name, path);
+				curr->provider, curr->probe_name, path);
 			curr = curr->next;
 			continue;
 		}
 
 		printf("Enabling semaphore of probe %s:%s at 0x%lx in %s\n",
-			   	   curr->provider, curr->probe_name, addr, path);
+				curr->provider, curr->probe_name, addr, path);
 
 		*((uint64_t *) addr) = 1;
 		curr = curr->next;
@@ -154,16 +154,16 @@ int elf_program_header_cb(struct dl_phdr_info* info, size_t info_size, void* pri
 	 * If the  program header name is null, we assume that it's the main binary.
 	 * If not, it's a shared object loaded in the address space.
 	 * */
-    if (info->dlpi_name == NULL || info->dlpi_name[0] == '\0') {
+	if (info->dlpi_name == NULL || info->dlpi_name[0] == '\0') {
 		char executable_path[MAX_PATH];
 		int path_len = readlink("/proc/self/exe", executable_path, MAX_PATH - 1);
 		executable_path[path_len] = '\0';
 		exec_path = strdup(executable_path);
-    } else {
-    	/* Removing const */
-    	exec_path = (char *) info->dlpi_name;
-    }
-    ret = instrument_object(exec_path);
+	} else {
+		/* Removing const */
+		exec_path = (char *) info->dlpi_name;
+	}
+	ret = instrument_object(exec_path);
 
 	return ret;
 }
