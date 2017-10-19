@@ -126,16 +126,15 @@ int instrument_object(const char *path)
 		ret = lttng_elf_get_sdt_sema_addr(fd, curr->provider, curr->probe_name, &addr);
 		curr = curr->next;
 		if (ret != 0) {
-			printf("Sema extraction failure\n");
 			continue;
 		}
 		if (addr == 0) {
-			printf("****No semaphore fpr probe %s:%s in %s\n",
+			printf("No semaphore for probe %s:%s in %s\n",
 				   curr->provider, curr->probe_name, path);
 			continue;
 		}
 
-		printf("****Enabling semaphore of probe %s:%s at 0x%lx in %s\n",
+		printf("Enabling semaphore of probe %s:%s at 0x%lx in %s\n",
 			   	   curr->provider, curr->probe_name, addr, path);
 
 		*((uint64_t *) addr) = 1;
@@ -187,8 +186,8 @@ void __attribute__((constructor)) so_ctor(void)
 {
 
 	/* Create an adhoc list of SDT probes for testing*/
-	target_list = create_target_probe_list("hello", "tp");
-	add_target_probe(target_list, "hello", "lol");
+	target_list = create_target_probe_list("hello", "tp1");
+	add_target_probe(target_list, "hello", "tp2");
 	add_target_probe(target_list, "rtld", "init_start");
 	add_target_probe(target_list, "libpthread", "mutex_init");
 
