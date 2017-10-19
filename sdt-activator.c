@@ -137,7 +137,7 @@ int instrument_object(const char *path)
 		printf("Enabling semaphore of probe %s:%s at 0x%lx in %s\n",
 			   	   curr->provider, curr->probe_name, addr, path);
 
-		*((uint64_t *) addr) = 1;
+		*((uint64_t *) addr) += 1;
 	}
 end:
 	return ret;
